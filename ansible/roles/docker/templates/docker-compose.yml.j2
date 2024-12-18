@@ -6,7 +6,7 @@ services:
     container_name: {{ app_name }}
     restart: always
     ports:
-      - "80:80"
+      - "8081:80"
       - "9700:9700"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/success"]  
@@ -21,7 +21,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
 
   grafana:
     image: grafana/grafana:latest

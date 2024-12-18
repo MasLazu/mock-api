@@ -1,6 +1,6 @@
 ---
 - name: Deploy app with Docker Compose
-  hosts: all
+  hosts: server
   become: true
   vars:
     app_name: "mock-api"

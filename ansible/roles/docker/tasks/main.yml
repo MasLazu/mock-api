@@ -1,16 +1,16 @@
 ---
-- name: Install Docker
-  apt:
-    name: docker.io
-    state: present
-    update_cache: true
+# - name: Install Docker
+#   apt:
+#     name: docker.io
+#     state: present
+#     update_cache: true
 
-- name: Install Docker Compose
-  get_url:
-    url: "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-{{ ansible_system }}-x86_64"
-    dest: /usr/local/bin/docker-compose
-    mode: '0755'
-  when: ansible_system != "Windows"
+# - name: Install Docker Compose
+#   get_url:
+#     url: "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-{{ ansible_system }}-x86_64"
+#     dest: /usr/local/bin/docker-compose
+#     mode: '0755'
+#   when: ansible_system != "Windows"
 
 - name: Create application directory
   file:
@@ -22,6 +22,11 @@
   template:
     src: docker-compose.yml.j2
     dest: "/opt/{{ app_name }}/docker-compose.yml"
+
+- name: Copy Prometheus file
+  template:
+    src: prometheus.yml.j2
+    dest: "/opt/{{ app_name }}/prometheus.yml"
 
 - name: Start the application using Docker Compose
   command: docker-compose up -d
