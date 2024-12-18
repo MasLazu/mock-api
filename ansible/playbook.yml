@@ -1,0 +1,9 @@
+---
+- name: Deploy app with Docker Compose
+  hosts: all
+  become: true
+  vars:
+    app_name: "mock-api"
+    app_image: "mfaziz/mock-api:latest"
+  roles:
+    - docker

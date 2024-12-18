@@ -1,0 +1,18 @@
+# Virtual Environment / Lingkungan Virtual
+venv/
+env/
+
+# Python cache files / File cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Log files / File log
+*.log
+logs/
+
+# Test results and reports / Hasil tes dan laporan
+results/
+reports/
+*.html
+*.csv
