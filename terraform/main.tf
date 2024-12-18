@@ -1,5 +1,19 @@
+terraform {
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
+    }
+  }
+}
+
 provider "digitalocean" {
   token = var.do_token
+}
+
+resource "digitalocean_ssh_key" "default" {
+  name       = "Terraform Example"
+  public_key = file(var.ssh_public_key_path)
 }
 
 resource "digitalocean_droplet" "mock_server" {
@@ -7,9 +21,8 @@ resource "digitalocean_droplet" "mock_server" {
   region = var.region
   size   = var.size
   image  = var.image
-
   ssh_keys = [
-    var.ssh_key_name
+    digitalocean_ssh_key.default.fingerprint
   ]
 
   tags = ["mock-server"]

@@ -1,16 +1,16 @@
 ---
-# - name: Install Docker
-#   apt:
-#     name: docker.io
-#     state: present
-#     update_cache: true
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+    update_cache: true
 
-# - name: Install Docker Compose
-#   get_url:
-#     url: "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-{{ ansible_system }}-x86_64"
-#     dest: /usr/local/bin/docker-compose
-#     mode: '0755'
-#   when: ansible_system != "Windows"
+- name: Install Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-{{ ansible_system }}-x86_64"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+  when: ansible_system != "Windows"
 
 - name: Create application directory
   file:
