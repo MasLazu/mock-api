@@ -60,7 +60,7 @@ func timeoutHandler(w http.ResponseWriter, _ *http.Request) {
 	requestCounter.Inc()
 	timeoutCounter.Inc()
 	time.Sleep(30 * time.Second)
-	writeResponseMessage(w, http.StatusOK, "This probably won't be seen due to timeout")
+	writeResponseMessage(w, http.StatusRequestTimeout, "This probably won't be seen due to timeout")
 }
 
 func successHandler(w http.ResponseWriter, _ *http.Request) {
