@@ -59,8 +59,8 @@ func delayHandler(w http.ResponseWriter, r *http.Request) {
 func timeoutHandler(w http.ResponseWriter, _ *http.Request) {
 	requestCounter.Inc()
 	timeoutCounter.Inc()
-	time.Sleep(30 * time.Second)
-	writeResponseMessage(w, http.StatusRequestTimeout, "This probably won't be seen due to timeout")
+	time.Sleep(10 * time.Second)
+	w.WriteHeader(http.StatusRequestTimeout)
 }
 
 func successHandler(w http.ResponseWriter, _ *http.Request) {
