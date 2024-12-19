@@ -10,31 +10,53 @@ import (
 )
 
 var (
-	requestCounter = prometheus.NewGauge(prometheus.GaugeOpts{
+	requestCounterChannel = make(chan prometheus.Gauge, 1)
+	delayCounterChannel   = make(chan prometheus.Gauge, 1)
+	timeoutCounterChannel = make(chan prometheus.Gauge, 1)
+	successCounterChannel = make(chan prometheus.Gauge, 1)
+	errorCounterChannel   = make(chan prometheus.Gauge, 1)
+)
+
+func initMetrics() []prometheus.Collector {
+	requestCounter := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "request_counter",
 		Help: "A counter for the total number of requests",
 	})
 
-	delayCounter = prometheus.NewGauge(prometheus.GaugeOpts{
+	delayCounter := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "delay_counter",
 		Help: "A counter for the delay endpoint",
 	})
 
-	timeoutCounter = prometheus.NewGauge(prometheus.GaugeOpts{
+	timeoutCounter := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "timeout_counter",
 		Help: "A counter for the timeout endpoint",
 	})
 
-	successCounter = prometheus.NewGauge(prometheus.GaugeOpts{
+	successCounter := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "success_counter",
 		Help: "A counter for the success endpoint",
 	})
 
-	errorCounter = prometheus.NewGauge(prometheus.GaugeOpts{
+	errorCounter := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "error_counter",
 		Help: "A counter for the error endpoint",
 	})
-)
+
+	requestCounterChannel <- requestCounter
+	delayCounterChannel <- delayCounter
+	timeoutCounterChannel <- timeoutCounter
+	successCounterChannel <- successCounter
+	errorCounterChannel <- errorCounter
+
+	return []prometheus.Collector{requestCounter, delayCounter, timeoutCounter, successCounter, errorCounter}
+}
+
+func incrementTotalMetrics() {
+	requestCounter := <-requestCounterChannel
+	requestCounter.Inc()
+	requestCounterChannel <- requestCounter
+}
 
 func writeResponseMessage(w http.ResponseWriter, status int, message string) {
 	w.Header().Set("Content-Type", "application/json")
@@ -43,18 +65,34 @@ func writeResponseMessage(w http.ResponseWriter, status int, message string) {
 }
 
 func resetCountersHandler(w http.ResponseWriter, r *http.Request) {
+	requestCounter := <-requestCounterChannel
 	requestCounter.Set(0)
-	delayCounter.Set(0)
-	timeoutCounter.Set(0)
-	successCounter.Set(0)
-	errorCounter.Set(0)
+	requestCounterChannel <- requestCounter
 
-	writeResponseMessage(w, http.StatusOK, "{'message': 'Counters reseted'}")
+	delayCounter := <-delayCounterChannel
+	delayCounter.Set(0)
+	delayCounterChannel <- delayCounter
+
+	timeoutCounter := <-timeoutCounterChannel
+	timeoutCounter.Set(0)
+	timeoutCounterChannel <- timeoutCounter
+
+	successCounter := <-successCounterChannel
+	successCounter.Set(0)
+	successCounterChannel <- successCounter
+
+	errorCounter := <-errorCounterChannel
+	errorCounter.Set(0)
+	errorCounterChannel <- errorCounter
+
+	writeResponseMessage(w, http.StatusOK, "Counters reseted")
 }
 
 func delayHandler(w http.ResponseWriter, r *http.Request) {
-	requestCounter.Inc()
+	incrementTotalMetrics()
+	delayCounter := <-delayCounterChannel
 	delayCounter.Inc()
+	delayCounterChannel <- delayCounter
 
 	seconds, err := strconv.Atoi(r.PathValue("seconds"))
 	if err != nil {
@@ -67,20 +105,29 @@ func delayHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func timeoutHandler(w http.ResponseWriter, _ *http.Request) {
-	requestCounter.Inc()
+	incrementTotalMetrics()
+	timeoutCounter := <-timeoutCounterChannel
 	timeoutCounter.Inc()
+	timeoutCounterChannel <- timeoutCounter
+
 	time.Sleep(10 * time.Second)
 	w.WriteHeader(http.StatusRequestTimeout)
 }
 
 func successHandler(w http.ResponseWriter, _ *http.Request) {
-	requestCounter.Inc()
+	incrementTotalMetrics()
+	successCounter := <-successCounterChannel
 	successCounter.Inc()
+	successCounterChannel <- successCounter
+
 	writeResponseMessage(w, http.StatusOK, "Success!")
 }
 
 func errorHandler(w http.ResponseWriter, _ *http.Request) {
-	requestCounter.Inc()
+	incrementTotalMetrics()
+	errorCounter := <-errorCounterChannel
 	errorCounter.Inc()
+	errorCounterChannel <- errorCounter
+
 	writeResponseMessage(w, http.StatusInternalServerError, "Internal Server Error")
 }

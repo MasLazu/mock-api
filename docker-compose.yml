@@ -31,7 +31,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana-volume:/var/lib/grafana
+      - grafana-volume-1:/var/lib/grafana
 
 volumes:
-  grafana-volume:
+  grafana-volume-1:
