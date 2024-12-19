@@ -36,6 +36,7 @@ func setupRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /timeout", timeoutHandler)
 	mux.HandleFunc("GET /success", successHandler)
 	mux.HandleFunc("GET /error", errorHandler)
+	mux.HandleFunc("GET /reset", resetCountersHandler)
 }
 
 func getPort() string {

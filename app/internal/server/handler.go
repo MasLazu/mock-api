@@ -10,27 +10,27 @@ import (
 )
 
 var (
-	requestCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	requestCounter = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "request_counter",
 		Help: "A counter for the total number of requests",
 	})
 
-	delayCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	delayCounter = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "delay_counter",
 		Help: "A counter for the delay endpoint",
 	})
 
-	timeoutCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	timeoutCounter = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "timeout_counter",
 		Help: "A counter for the timeout endpoint",
 	})
 
-	successCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	successCounter = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "success_counter",
 		Help: "A counter for the success endpoint",
 	})
 
-	errorCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	errorCounter = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "error_counter",
 		Help: "A counter for the error endpoint",
 	})
@@ -40,6 +40,16 @@ func writeResponseMessage(w http.ResponseWriter, status int, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	fmt.Fprintf(w, "{\"message\": \"%s\"}", message)
+}
+
+func resetCountersHandler(w http.ResponseWriter, r *http.Request) {
+	requestCounter.Set(0)
+	delayCounter.Set(0)
+	timeoutCounter.Set(0)
+	successCounter.Set(0)
+	errorCounter.Set(0)
+
+	writeResponseMessage(w, http.StatusOK, "{'message': 'Counters reseted'}")
 }
 
 func delayHandler(w http.ResponseWriter, r *http.Request) {
