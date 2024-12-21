@@ -7,11 +7,6 @@ terraform {
   }
 }
 
-variable "ssh_fingerprint" {
-  type        = string
-  description = "The fingerprint of the SSH key to use for the droplet"
-}
-
 provider "digitalocean" {
   token = var.do_token
 }
