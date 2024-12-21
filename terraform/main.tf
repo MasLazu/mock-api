@@ -11,19 +11,16 @@ provider "digitalocean" {
   token = var.do_token
 }
 
-resource "digitalocean_ssh_key" "default" {
-  name       = "Terraform Example"
-  public_key = var.ssh_public_key
-}
-
 resource "digitalocean_droplet" "mock_server" {
-  name   = "mock-server"
-  region = var.region
-  size   = var.size
-  image  = var.image
-  ssh_keys = [
-    digitalocean_ssh_key.default.fingerprint
-  ]
+  name      = "mock-server"
+  region    = var.region
+  size      = var.size
+  image     = var.image
+  user_data = <<-EOF
+    #cloud-config
+    ssh_keys:
+      - ${var.ssh_public_key}
+  EOF
 
   tags = ["mock-server"]
 }

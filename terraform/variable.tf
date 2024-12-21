@@ -20,7 +20,3 @@ variable "ssh_public_key" {
   type      = string
   sensitive = true
 }
-
-variable "ssh_public_key_path" {
-  default = "~/.ssh/id_rsa.pub"
-}
