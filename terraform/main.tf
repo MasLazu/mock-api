@@ -16,9 +16,6 @@ resource "digitalocean_droplet" "mock_server" {
   region = var.region
   size   = var.size
   image  = var.image
-  ssh_keys = [
-    digitalocean_ssh_key.default.fingerprint
-  ]
 
   tags = ["mock-server"]
 }
