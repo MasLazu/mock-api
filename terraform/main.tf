@@ -13,7 +13,7 @@ provider "digitalocean" {
 
 resource "digitalocean_ssh_key" "default" {
   name       = "Terraform Example"
-  public_key = file(var.ssh_public_key_path)
+  public_key = var.ssh_public_key
 }
 
 resource "digitalocean_droplet" "mock_server" {

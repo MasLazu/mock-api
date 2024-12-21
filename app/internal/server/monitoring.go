@@ -14,8 +14,13 @@ var once sync.Once
 
 func monitorMetrics() {
 	once.Do(func() {
-		metrics := initMetrics()
-		prometheus.MustRegister(metrics...)
+		prometheus.MustRegister(
+			requestCounter,
+			delayCounter,
+			timeoutCounter,
+			successCounter,
+			errorCounter,
+		)
 
 		http.Handle("/metrics", promhttp.Handler())
 		slog.Info("Starting exporter on :9700")

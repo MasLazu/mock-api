@@ -14,6 +14,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      load_test:
+        ipv4_address: 192.168.1.100
 
   prometheus:
     image: prom/prometheus
@@ -21,7 +24,9 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./volume/prometheus.yml:/etc/prometheus/prometheus.yml"
+    networks:
+      - load_test
 
   grafana:
     image: grafana/grafana:latest
@@ -32,6 +37,13 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana-volume-1:/var/lib/grafana
+    networks:
+      - load_test
 
 volumes:
   grafana-volume-1:
+  influxdb-data:
+
+networks:
+  load_test:
+    external: true

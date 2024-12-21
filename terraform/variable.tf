@@ -16,8 +16,9 @@ variable "size" {
   default = "s-1vcpu-1gb"
 }
 
-variable "ssh_private_key_path" {
-  default = "~/.ssh/id_rsa"
+variable "ssh_public_key" {
+  type      = string
+  sensitive = true
 }
 
 variable "ssh_public_key_path" {
