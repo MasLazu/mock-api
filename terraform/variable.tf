@@ -15,8 +15,3 @@ variable "image" {
 variable "size" {
   default = "s-1vcpu-1gb"
 }
-
-variable "ssh_public_key" {
-  type      = string
-  sensitive = true
-}
