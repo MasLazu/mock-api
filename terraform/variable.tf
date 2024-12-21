@@ -15,3 +15,8 @@ variable "image" {
 variable "size" {
   default = "s-1vcpu-1gb"
 }
+
+variable "ssh_fingerprint" {
+  type        = string
+  description = "The fingerprint of the SSH key to use for the droplet"
+}

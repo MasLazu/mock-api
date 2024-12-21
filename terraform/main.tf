@@ -7,15 +7,21 @@ terraform {
   }
 }
 
+variable "ssh_fingerprint" {
+  type        = string
+  description = "The fingerprint of the SSH key to use for the droplet"
+}
+
 provider "digitalocean" {
   token = var.do_token
 }
 
 resource "digitalocean_droplet" "mock_server" {
-  name   = "mock-server"
-  region = var.region
-  size   = var.size
-  image  = var.image
+  name     = "mock-server"
+  region   = var.region
+  size     = var.size
+  image    = var.image
+  ssh_keys = [var.ssh_fingerprint]
 
   tags = ["mock-server"]
 }
