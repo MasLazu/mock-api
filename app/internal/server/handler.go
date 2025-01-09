@@ -87,3 +87,17 @@ func errorHandler(w http.ResponseWriter, _ *http.Request) {
 
 	writeResponseMessage(w, http.StatusInternalServerError, "Internal Server Error")
 }
+
+func badRequestDelayHandler(w http.ResponseWriter, r *http.Request) {
+	requestCounter.Inc()
+	delayCounter.Inc()
+
+	seconds, err := strconv.Atoi(r.PathValue("seconds"))
+	if err != nil {
+		writeResponseMessage(w, http.StatusBadRequest, "Invalid seconds parameter")
+		return
+	}
+	time.Sleep(time.Duration(seconds) * time.Second)
+
+	writeResponseMessage(w, http.StatusBadRequest, fmt.Sprintf("Delayed for %d seconds", seconds))
+}
