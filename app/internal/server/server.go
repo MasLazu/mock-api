@@ -37,13 +37,10 @@ func setupRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /success", successHandler)
 	mux.HandleFunc("GET /error", errorHandler)
 	mux.HandleFunc("GET /reset", resetCountersHandler)
+	mux.HandleFunc("GET /large-response", largeResponseHandler)
 
-	mux.HandleFunc("POST /delay/{seconds}", delayHandler)
-	mux.HandleFunc("POST /badrequest/delay/{seconds}", badRequestDelayHandler)
-	mux.HandleFunc("POST /timeout", timeoutHandler)
-	mux.HandleFunc("POST /success", successHandler)
-	mux.HandleFunc("POST /error", errorHandler)
-	mux.HandleFunc("POST /reset", resetCountersHandler)
+	mux.HandleFunc("POST /delay/{seconds}", postDelayHandler)
+	mux.HandleFunc("POST /badrequest/delay/{seconds}", postBadRequestDelayHandler)
 }
 
 func getPort() string {
